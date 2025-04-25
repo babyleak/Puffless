@@ -31,7 +31,7 @@ Puffless — это минималистичное Android-приложение,
 1. Установи [Android Studio](https://developer.android.com/studio)
 2. Склонируй репозиторий:
    ```bash
-   git clone https://github.com/твой-юзер/puffless.git
+   git clone https://github.com/babyleak/Puffless.git
 3. Открой проект в Android Studio
 4. Подключи телефон или эмулятор
 5. Нажми Run
