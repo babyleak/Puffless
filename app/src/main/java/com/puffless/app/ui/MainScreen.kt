@@ -9,7 +9,9 @@ import androidx.compose.ui.unit.dp
 import com.puffless.app.viewmodel.PuffViewModel
 
 @Composable
-fun MainScreen(viewModel: PuffViewModel, onNavigateStats: () -> Unit) {
+fun MainScreen(viewModel: PuffViewModel,
+               onNavigateStats: () -> Unit,
+               onNavigatePlanner: () -> Unit) {
     val day = viewModel.dayData
 
     Column(
@@ -38,6 +40,10 @@ fun MainScreen(viewModel: PuffViewModel, onNavigateStats: () -> Unit) {
 
         Button(onClick = onNavigateStats) {
             Text("📈 Статистика")
+        }
+
+        Button(onClick = onNavigatePlanner) {
+            Text("📆 Планировщик лимитов")
         }
     }
 }

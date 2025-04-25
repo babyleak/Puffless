@@ -59,4 +59,21 @@ class PuffViewModel(application: Application) : AndroidViewModel(application) {
             recentStats = dao.getRecentDays(limit)
         }
     }
+
+    fun setPlannedLimit(date: String, limit: Int) {
+        viewModelScope.launch {
+            val existing = dao.getByDate(date)
+            val entry = if (existing != null) {
+                existing.copy(limit = limit)
+            } else {
+                DailyPuffs(date = date, limit = limit, used = 0)
+            }
+            dao.insert(entry)
+            if (date == getTodayDate()) loadToday()
+        }
+    }
+
+    private fun getTodayDate(): String {
+        return SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    }
 }

@@ -11,6 +11,7 @@ import com.puffless.app.viewmodel.PuffViewModel
 sealed class Screen(val route: String) {
     object Main : Screen("main")
     object Stats : Screen("stats")
+    object Planner : Screen("planner")
 }
 
 @Composable
@@ -25,11 +26,21 @@ fun PuffNavGraph(
                 onNavigateStats = {
                     viewModel.loadRecentStats()
                     navController.navigate(Screen.Stats.route)
+                },
+                onNavigatePlanner = {
+                    viewModel.loadRecentStats()
+                    navController.navigate(Screen.Planner.route)
                 }
             )
         }
         composable(Screen.Stats.route) {
             StatsScreen(
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(Screen.Planner.route) {
+            PlannerScreen(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
