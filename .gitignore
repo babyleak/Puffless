@@ -1,0 +1,21 @@
+# Android/Java
+.gradle/
+.idea/
+*.iml
+/build/
+local.properties
+.DS_Store
+
+# Kotlin
+*.log
+*.tmp
+
+# Jetpack Compose previews
+*.preview
+
+# APKs
+*.apk
+*.ap_
+
+# VS Code
+.vscode/
