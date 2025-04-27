@@ -4,6 +4,9 @@ import android.app.Application
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.OnLifecycleEvent
 import com.puffless.app.data.DailyPuffs
 import com.puffless.app.data.PuffDatabase
 import kotlinx.coroutines.launch
@@ -11,10 +14,11 @@ import java.time.LocalDate
 import java.text.SimpleDateFormat
 import java.util.*
 
-class PuffViewModel(application: Application) : AndroidViewModel(application) {
+class PuffViewModel(application: Application) : AndroidViewModel(application), LifecycleObserver {
     private val db = PuffDatabase.getDatabase(application)
     private val dao = db.puffDao()
     private val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+    private var lastLoadedDate: String = getTodayDate()
 
     var dayData by mutableStateOf<DailyPuffs?>(null)
         private set
@@ -70,6 +74,19 @@ class PuffViewModel(application: Application) : AndroidViewModel(application) {
             }
             dao.insert(entry)
             if (date == getTodayDate()) loadToday()
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onAppResume() {
+        val currentDate = getTodayDate()
+        if (currentDate != lastLoadedDate) {
+            viewModelScope.launch {
+                val data = dao.getByDate(currentDate) ?: DailyPuffs(currentDate, limit = 200, used = 0)
+                dao.insert(data)
+                dayData = data
+                lastLoadedDate = currentDate
+            }
         }
     }
 
