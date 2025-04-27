@@ -14,32 +14,48 @@ import java.util.*
 
 @Composable
 fun PlannerScreen(viewModel: PuffViewModel, onBack: () -> Unit) {
-    var dateInput by remember { mutableStateOf("") }
-    var limitInput by remember { mutableStateOf("") }
-
-    var futureStats = viewModel.recentStats.filter {
+    val futureStats = viewModel.recentStats.filter {
         val today = getToday()
         it.date > today
     }
 
-    Column (modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
-
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Button(onClick = onBack) {
-            Text("👈 Назад")
+            Text("← Назад")
         }
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text("📅 Установить лимит на определённую дату")
+        Text("📅 Установить лимит на дату", style = MaterialTheme.typography.h6)
 
+        LimitInputBlock(viewModel)
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text("📆 Будущие лимиты:", style = MaterialTheme.typography.h6)
+
+        FutureLimitsList(futureStats)
+    }
+}
+
+@Composable
+fun LimitInputBlock(viewModel: PuffViewModel) {
+    var dateInput by remember { mutableStateOf("") }
+    var limitInput by remember { mutableStateOf("") }
+
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         OutlinedTextField(
             value = dateInput,
             onValueChange = { dateInput = it },
-            label = { Text("Дата (в формате YYYY-MM-DD)") },
+            label = { Text("Дата (YYYY-MM-DD)") },
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = limitInput,
@@ -55,31 +71,30 @@ fun PlannerScreen(viewModel: PuffViewModel, onBack: () -> Unit) {
                 val limit = limitInput.toIntOrNull()
                 if (limit != null && dateInput.matches(Regex("""\d{4}-\d{2}-\d{2}"""))) {
                     viewModel.setPlannedLimit(dateInput, limit)
-                    viewModel.loadRecentStats()
                     dateInput = ""
                     limitInput = ""
                 }
-            }
+            },
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text("Сохранить")
+            Text("Сохранить лимит")
         }
+    }
+}
 
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Text("📆 Будущие лимиты:")
-
-        LazyColumn {
-            items(futureStats) { day ->
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    elevation = 4.dp
-                ) {
-                    Column(modifier = Modifier.padding(12.dp)) {
-                        Text("📅 ${day.date}")
-                        Text("Лимит: ${day.limit}, Использовано: ${day.used}")
-                    }
+@Composable
+fun FutureLimitsList(futureStats: List<com.puffless.app.data.DailyPuffs>) {
+    LazyColumn {
+        items(futureStats) { day ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                elevation = 4.dp
+            ) {
+                Column(modifier = Modifier.padding(12.dp)) {
+                    Text("📅 ${day.date}")
+                    Text("Лимит: ${day.limit}, Использовано: ${day.used}")
                 }
             }
         }
