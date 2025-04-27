@@ -25,7 +25,7 @@ fun PlannerScreen(viewModel: PuffViewModel, onBack: () -> Unit) {
             .padding(16.dp)
     ) {
         Button(onClick = onBack) {
-            Text("← Назад")
+            Text("👈 Назад")
         }
 
         Spacer(modifier = Modifier.height(16.dp))

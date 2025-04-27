@@ -31,7 +31,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "2.0.0"
+        kotlinCompilerExtensionVersion = "1.5.10"
     }
 
     compileOptions {
@@ -54,6 +54,8 @@ dependencies {
     implementation(libs.androidx.material)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.core)
+    implementation(libs.compose)
     debugImplementation(libs.ui.tooling)
 
     // Navigation
@@ -67,6 +69,11 @@ dependencies {
     implementation(libs.androidx.room.runtime)
     implementation(libs.room.ktx)
     kapt("androidx.room:room-compiler:2.6.1")
+
+    // Vico Chart Library
+    implementation("com.patrykandpatrick.vico:core:1.13.0")
+    implementation("com.patrykandpatrick.vico:compose:1.13.0")
+    implementation("com.patrykandpatrick.vico:views:1.13.0")
 
     // Test
     testImplementation(libs.junit)

@@ -9,6 +9,8 @@ import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent
 import com.puffless.app.data.DailyPuffs
 import com.puffless.app.data.PuffDatabase
+import com.patrykandpatrick.vico.core.entry.ChartEntry
+import com.patrykandpatrick.vico.core.entry.FloatEntry
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.text.SimpleDateFormat
@@ -91,6 +93,16 @@ class PuffViewModel(application: Application) : AndroidViewModel(application), L
                 lastLoadedDate = currentDate
             }
         }
+    }
+
+    fun getLimitChartEntries(): List<ChartEntry> {
+        return recentStats.sortedBy { it.date }
+            .mapIndexed { index, day ->
+                FloatEntry(
+                    x = index.toFloat(),
+                    y = day.limit.toFloat()
+                )
+            }
     }
 
     private fun getTodayDate(): String {
