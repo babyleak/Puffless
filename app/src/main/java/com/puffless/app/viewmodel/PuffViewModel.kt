@@ -60,6 +60,16 @@ class PuffViewModel(application: Application) : AndroidViewModel(application), L
         }
     }
 
+    fun deletePlannedLimit(date: String) {
+        viewModelScope.launch {
+            val day = dao.getByDate(date)
+            if (day != null) {
+                dao.delete(day)
+                recentStats = dao.getRecentDays(14)
+            }
+        }
+    }
+
     fun loadRecentStats(limit: Int = 14) {
         viewModelScope.launch {
             recentStats = dao.getRecentDays(limit)

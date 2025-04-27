@@ -1,5 +1,8 @@
 package com.puffless.app.ui
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -38,7 +41,7 @@ fun PlannerScreen(viewModel: PuffViewModel, onBack: () -> Unit) {
 
         Text("📆 Будущие лимиты:", style = MaterialTheme.typography.h6)
 
-        FutureLimitsList(futureStats)
+        FutureLimitsList(futureStats, viewModel)
     }
 }
 
@@ -83,21 +86,112 @@ fun LimitInputBlock(viewModel: PuffViewModel) {
 }
 
 @Composable
-fun FutureLimitsList(futureStats: List<com.puffless.app.data.DailyPuffs>) {
+fun FutureLimitsList(futureStats: List<com.puffless.app.data.DailyPuffs>, viewModel: PuffViewModel) {
+    var editingDay by remember { mutableStateOf<com.puffless.app.data.DailyPuffs?>(null) }
+    var newLimitInput by remember { mutableStateOf("") }
+    var dayToDelete by remember { mutableStateOf<com.puffless.app.data.DailyPuffs?>(null) }
+
+    val visibleDays = remember { mutableStateListOf<String>() }
+
+    LaunchedEffect(futureStats) {
+        visibleDays.clear()
+        visibleDays.addAll(futureStats.map { it.date })
+    }
+
     LazyColumn {
-        items(futureStats) { day ->
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                elevation = 4.dp
+        items(futureStats, key = { it.date }) { day ->
+            AnimatedVisibility(
+                visible = day.date in visibleDays,
+                enter = fadeIn(),
+                exit = fadeOut()
             ) {
-                Column(modifier = Modifier.padding(12.dp)) {
-                    Text("📅 ${day.date}")
-                    Text("Лимит: ${day.limit}, Использовано: ${day.used}")
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    elevation = 4.dp
+                ) {
+                    Column(modifier = Modifier.padding(12.dp)) {
+                        Text("📅 ${day.date}")
+                        Text("Лимит: ${day.limit}, Использовано: ${day.used}")
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+                            Button(onClick = {
+                                editingDay = day
+                                newLimitInput = day.limit.toString()
+                            }) {
+                                Text("✏️ Изменить")
+                            }
+
+                            Button(onClick = {
+                                dayToDelete = day
+                            }) {
+                                Text("🗑️ Удалить")
+                            }
+                        }
+                    }
                 }
             }
         }
+    }
+
+    if (dayToDelete != null) {
+        AlertDialog(
+            onDismissRequest = { dayToDelete = null },
+            title = { Text("Подтвердите удаление") },
+            text = { Text("Вы уверены, что хотите удалить лимит на ${dayToDelete?.date}?") },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        visibleDays.remove(dayToDelete!!.date)
+                        viewModel.deletePlannedLimit(dayToDelete!!.date)
+                        dayToDelete = null
+                    },
+                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.error)
+                ) {
+                    Text("Удалить")
+                }
+            },
+            dismissButton = {
+                Button(
+                    onClick = { dayToDelete = null }
+                ) {
+                    Text("Отмена")
+                }
+            }
+        )
+    }
+
+    if (editingDay != null) {
+        AlertDialog(
+            onDismissRequest = { editingDay = null },
+            title = { Text("Изменить лимит для ${editingDay?.date}") },
+            text = {
+                OutlinedTextField(
+                    value = newLimitInput,
+                    onValueChange = { newLimitInput = it.filter { ch -> ch.isDigit() } },
+                    label = { Text("Новый лимит") }
+                )
+            },
+            confirmButton = {
+                Button(onClick = {
+                    val newLimit = newLimitInput.toIntOrNull()
+                    if (newLimit != null) {
+                        viewModel.setPlannedLimit(editingDay!!.date, newLimit)
+                    }
+                    editingDay = null
+                }) {
+                    Text("Сохранить")
+                }
+            },
+            dismissButton = {
+                Button(onClick = { editingDay = null }) {
+                    Text("Отмена")
+                }
+            }
+        )
     }
 }
 

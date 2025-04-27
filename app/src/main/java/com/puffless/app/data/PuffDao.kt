@@ -13,6 +13,9 @@ interface PuffDao {
     @Update
     suspend fun update(day: DailyPuffs)
 
+    @Delete
+    suspend fun delete(day: DailyPuffs)
+
     @Query("SELECT * FROM daily_puffs ORDER BY date DESC LIMIT :limit")
     suspend fun getRecentDays(limit: Int): List<DailyPuffs>
 }
