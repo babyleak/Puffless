@@ -73,6 +73,9 @@ class PuffViewModel(application: Application) : AndroidViewModel(application), L
                 DailyPuffs(date = date, limit = limit, used = 0)
             }
             dao.insert(entry)
+
+            recentStats = dao.getRecentDays(14)
+
             if (date == getTodayDate()) loadToday()
         }
     }
