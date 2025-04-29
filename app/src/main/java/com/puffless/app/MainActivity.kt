@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.rememberNavController
 import com.puffless.app.ui.PuffNavGraph
+import com.puffless.app.ui.theme.PufflessTheme
 import com.puffless.app.utils.NotificationHelper
 import com.puffless.app.viewmodel.PuffViewModel
 
@@ -47,9 +48,10 @@ class MainActivity : ComponentActivity() {
         }
 
         setContent {
-            MaterialTheme {
+            val viewModel: PuffViewModel = viewModel()
+
+            PufflessTheme(themeSetting = viewModel.themeSetting) {
                 Surface {
-                    val viewModel: PuffViewModel = viewModel()
                     val navController = rememberNavController()
                     val lifecycleOwner = LocalLifecycleOwner.current
 

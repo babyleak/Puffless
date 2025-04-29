@@ -11,7 +11,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.puffless.app.ui.theme.ThemeSetting
 import com.puffless.app.viewmodel.PuffViewModel
 
 @Composable
@@ -85,6 +87,24 @@ fun MainScreen(viewModel: PuffViewModel,
 
         Button(onClick = onNavigatePlanner) {
             Text("📆 Планировщик лимитов")
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Text("Выбери тему:", textAlign = TextAlign.Center)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
+            Button(onClick = { viewModel.setTheme(ThemeSetting.LIGHT) }) {
+                Text("Светлая")
+            }
+            Button(onClick = { viewModel.setTheme(ThemeSetting.DARK) }) {
+                Text("Темная")
+            }
+            Button(onClick = { viewModel.setTheme(ThemeSetting.SYSTEM) }) {
+                Text("Системная")
+            }
         }
     }
 }

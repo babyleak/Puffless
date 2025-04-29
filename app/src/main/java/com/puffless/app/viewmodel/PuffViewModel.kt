@@ -1,6 +1,7 @@
 package com.puffless.app.viewmodel
 
 import android.app.Application
+import android.content.res.Resources.Theme
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,6 +12,7 @@ import com.puffless.app.data.DailyPuffs
 import com.puffless.app.data.PuffDatabase
 import com.patrykandpatrick.vico.core.entry.ChartEntry
 import com.patrykandpatrick.vico.core.entry.FloatEntry
+import com.puffless.app.ui.theme.ThemeSetting
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.text.SimpleDateFormat
@@ -26,6 +28,9 @@ class PuffViewModel(application: Application) : AndroidViewModel(application), L
         private set
 
     var recentStats by mutableStateOf<List<DailyPuffs>>(emptyList())
+        private set
+
+    var themeSetting by mutableStateOf(ThemeSetting.SYSTEM)
         private set
 
     init {
@@ -113,6 +118,10 @@ class PuffViewModel(application: Application) : AndroidViewModel(application), L
                     y = day.limit.toFloat()
                 )
             }
+    }
+
+    fun setTheme(theme: ThemeSetting) {
+        themeSetting = theme
     }
 
     private fun getTodayDate(): String {
