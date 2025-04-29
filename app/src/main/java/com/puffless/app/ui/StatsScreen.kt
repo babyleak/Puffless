@@ -7,6 +7,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.runtime.remember
 import com.patrykandpatrick.vico.compose.axis.horizontal.rememberBottomAxis
 import com.patrykandpatrick.vico.compose.axis.vertical.rememberStartAxis
@@ -19,6 +20,8 @@ import com.patrykandpatrick.vico.core.entry.ChartEntryModelProducer
 import java.text.SimpleDateFormat
 import java.util.Locale
 import androidx.core.graphics.toColorInt
+import com.patrykandpatrick.vico.core.component.shape.LineComponent
+import com.patrykandpatrick.vico.core.component.text.textComponent
 
 @Composable
 fun StatsScreen(viewModel: PuffViewModel, onBack: () -> Unit) {
@@ -47,6 +50,8 @@ fun StatsScreen(viewModel: PuffViewModel, onBack: () -> Unit) {
             }
         }
 
+    val labelColor = MaterialTheme.colors.onBackground
+
     Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
 
         Button(onClick = onBack) {
@@ -72,9 +77,14 @@ fun StatsScreen(viewModel: PuffViewModel, onBack: () -> Unit) {
                 )
             ),
             chartModelProducer = chartEntryModelProducer,
-            startAxis = rememberStartAxis(),
+            startAxis = rememberStartAxis(
+                label = textComponent { color = labelColor.toArgb() },
+                tick = LineComponent (color = labelColor.toArgb())
+            ),
             bottomAxis = rememberBottomAxis(
                 valueFormatter = DateAxisValueFormatter(shortDates),
+                label = textComponent { color = labelColor.toArgb() },
+                tick = LineComponent (color = labelColor.toArgb()),
                 itemPlacer = AxisItemPlacer.Horizontal.default(spacing = 1),
                 guideline = null,
                 labelRotationDegrees = 0f
