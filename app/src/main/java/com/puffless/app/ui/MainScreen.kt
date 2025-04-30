@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.puffless.app.ui.theme.ThemeSetting
@@ -23,6 +24,7 @@ fun MainScreen(viewModel: PuffViewModel,
                onNavigateSettings: () -> Unit
               ) {
     val day = viewModel.dayData
+    val context = LocalContext.current
 
     val progress = if (day != null && day.limit > 0) {
         ((day.limit - day.used).toFloat() / day.limit.toFloat()).coerceIn(0f, 1f)
@@ -98,13 +100,13 @@ fun MainScreen(viewModel: PuffViewModel,
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = { viewModel.setTheme(ThemeSetting.LIGHT) }) {
+            Button(onClick = { viewModel.saveThemeSetting(context, ThemeSetting.LIGHT) }) {
                 Text("Светлая")
             }
-            Button(onClick = { viewModel.setTheme(ThemeSetting.DARK) }) {
+            Button(onClick = { viewModel.saveThemeSetting(context, ThemeSetting.DARK) }) {
                 Text("Темная")
             }
-            Button(onClick = { viewModel.setTheme(ThemeSetting.SYSTEM) }) {
+            Button(onClick = { viewModel.saveThemeSetting(context, ThemeSetting.SYSTEM) }) {
                 Text("Системная")
             }
         }

@@ -38,6 +38,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val viewModel: PuffViewModel = viewModel()
+            viewModel.loadThemeSetting(this)
 
             PufflessTheme(themeSetting = viewModel.themeSetting) {
                 Surface {

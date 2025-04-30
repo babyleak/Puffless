@@ -1,7 +1,7 @@
 package com.puffless.app.viewmodel
 
 import android.app.Application
-import android.content.res.Resources.Theme
+import android.content.Context
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,9 +14,9 @@ import com.patrykandpatrick.vico.core.entry.ChartEntry
 import com.patrykandpatrick.vico.core.entry.FloatEntry
 import com.puffless.app.ui.theme.ThemeSetting
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.core.content.edit
 
 class PuffViewModel(application: Application) : AndroidViewModel(application), LifecycleObserver {
     private val db = PuffDatabase.getDatabase(application)
@@ -122,6 +122,20 @@ class PuffViewModel(application: Application) : AndroidViewModel(application), L
 
     fun setTheme(theme: ThemeSetting) {
         themeSetting = theme
+    }
+
+    fun saveThemeSetting(context: Context, theme: ThemeSetting) {
+        themeSetting = theme
+        context.getSharedPreferences("PufflessPrefs", Context.MODE_PRIVATE)
+            .edit() {
+                putString("theme", theme.name)
+            }
+    }
+
+    fun loadThemeSetting(context: Context) {
+        val prefs = context.getSharedPreferences("PufflessPrefs", Context.MODE_PRIVATE)
+        val saved = prefs.getString("theme", ThemeSetting.SYSTEM.name)
+        themeSetting = ThemeSetting.valueOf(saved ?: ThemeSetting.SYSTEM.name)
     }
 
     private fun getTodayDate(): String {
