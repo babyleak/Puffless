@@ -36,17 +36,6 @@ class MainActivity : ComponentActivity() {
             }
         }
 
-        if (NotificationHelper.shouldSendNotification(this)) {
-            android.os.Handler(mainLooper).postDelayed({
-                NotificationHelper.sendSimpleNotification(
-                    this,
-                    "Puffless",
-                    "Не забудь: сколько затяжек осталось сегодня?"
-                )
-                NotificationHelper.markNotificationSent(this)
-            }, 5000)
-        }
-
         setContent {
             val viewModel: PuffViewModel = viewModel()
 

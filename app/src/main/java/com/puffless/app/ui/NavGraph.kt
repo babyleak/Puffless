@@ -12,6 +12,7 @@ sealed class Screen(val route: String) {
     object Main : Screen("main")
     object Stats : Screen("stats")
     object Planner : Screen("planner")
+    object Settings : Screen("settings")
 }
 
 @Composable
@@ -30,6 +31,9 @@ fun PuffNavGraph(
                 onNavigatePlanner = {
                     viewModel.loadRecentStats()
                     navController.navigate(Screen.Planner.route)
+                },
+                onNavigateSettings = {
+                    navController.navigate(Screen.Settings.route)
                 }
             )
         }
@@ -44,6 +48,9 @@ fun PuffNavGraph(
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
             )
+        }
+        composable(Screen.Settings.route) {
+            SettingsScreen()
         }
     }
 }

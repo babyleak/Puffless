@@ -19,7 +19,9 @@ import com.puffless.app.viewmodel.PuffViewModel
 @Composable
 fun MainScreen(viewModel: PuffViewModel,
                onNavigateStats: () -> Unit,
-               onNavigatePlanner: () -> Unit) {
+               onNavigatePlanner: () -> Unit,
+               onNavigateSettings: () -> Unit
+              ) {
     val day = viewModel.dayData
 
     val progress = if (day != null && day.limit > 0) {
@@ -105,6 +107,15 @@ fun MainScreen(viewModel: PuffViewModel,
             Button(onClick = { viewModel.setTheme(ThemeSetting.SYSTEM) }) {
                 Text("Системная")
             }
+        }
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Button(
+            onClick = { onNavigateSettings() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Настройки")
         }
     }
 }
