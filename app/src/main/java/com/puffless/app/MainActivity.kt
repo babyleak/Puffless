@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.compose.rememberNavController
+import com.puffless.app.ui.MainScaffold
 import com.puffless.app.ui.PuffNavGraph
 import com.puffless.app.ui.theme.PufflessTheme
 import com.puffless.app.utils.NotificationHelper
@@ -52,7 +53,9 @@ class MainActivity : ComponentActivity() {
                         }
                     }
 
-                    PuffNavGraph(navController, viewModel)
+                    MainScaffold(navController) {
+                        PuffNavGraph(navController, viewModel)
+                    }
                 }
             }
         }

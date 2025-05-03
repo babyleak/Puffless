@@ -1,8 +1,6 @@
 package com.puffless.app.ui
 
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
-import androidx.navigation.NavHost
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -22,35 +20,43 @@ fun PuffNavGraph(
 ) {
     NavHost(navController = navController, startDestination = Screen.Main.route) {
         composable(Screen.Main.route) {
-            MainScreen(
-                viewModel = viewModel,
-                onNavigateStats = {
-                    viewModel.loadRecentStats()
-                    navController.navigate(Screen.Stats.route)
-                },
-                onNavigatePlanner = {
-                    viewModel.loadRecentStats()
-                    navController.navigate(Screen.Planner.route)
-                },
-                onNavigateSettings = {
-                    navController.navigate(Screen.Settings.route)
-                }
-            )
+            MainScreen(viewModel = viewModel)
         }
+
         composable(Screen.Stats.route) {
             StatsScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                onBack = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Main.route) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
+
         composable(Screen.Planner.route) {
             PlannerScreen(
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() }
+                onBack = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Main.route) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                }
             )
         }
+
         composable(Screen.Settings.route) {
-            SettingsScreen()
+            SettingsScreen(
+                viewModel = viewModel,
+                onBack = {
+                    navController.navigate(Screen.Main.route) {
+                        popUpTo(Screen.Main.route) { inclusive = false }
+                        launchSingleTop = true
+                    }
+                }
+            )
         }
     }
 }

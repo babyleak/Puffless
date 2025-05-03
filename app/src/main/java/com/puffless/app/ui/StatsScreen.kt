@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.toArgb
@@ -25,6 +26,10 @@ import com.patrykandpatrick.vico.core.component.text.textComponent
 
 @Composable
 fun StatsScreen(viewModel: PuffViewModel, onBack: () -> Unit) {
+    LaunchedEffect(Unit) {
+        viewModel.loadRecentStats()
+    }
+
     val chartEntries = viewModel.recentStats
         .sortedBy { it.date }
         .mapIndexed { index, day ->

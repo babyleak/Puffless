@@ -11,20 +11,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.puffless.app.ui.theme.ThemeSetting
 import com.puffless.app.viewmodel.PuffViewModel
 
 @Composable
-fun MainScreen(viewModel: PuffViewModel,
-               onNavigateStats: () -> Unit,
-               onNavigatePlanner: () -> Unit,
-               onNavigateSettings: () -> Unit
-              ) {
+fun MainScreen(viewModel: PuffViewModel) {
     val day = viewModel.dayData
-    val context = LocalContext.current
 
     val progress = if (day != null && day.limit > 0) {
         ((day.limit - day.used).toFloat() / day.limit.toFloat()).coerceIn(0f, 1f)
@@ -68,8 +60,7 @@ fun MainScreen(viewModel: PuffViewModel,
                 progress = progress,
                 color = animatedColor,
                 backgroundColor = Color.Transparent,
-                modifier = Modifier
-                    .fillMaxSize()
+                modifier = Modifier.fillMaxSize()
             )
         }
 
@@ -82,43 +73,6 @@ fun MainScreen(viewModel: PuffViewModel,
         Spacer(modifier = Modifier.height(32.dp))
 
         LimitSetter(viewModel)
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(onClick = onNavigateStats) {
-            Text("📈 Статистика")
-        }
-
-        Button(onClick = onNavigatePlanner) {
-            Text("📆 Планировщик лимитов")
-        }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Text("Выбери тему:", textAlign = TextAlign.Center)
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(horizontalArrangement = Arrangement.SpaceEvenly, modifier = Modifier.fillMaxWidth()) {
-            Button(onClick = { viewModel.saveThemeSetting(context, ThemeSetting.LIGHT) }) {
-                Text("Светлая")
-            }
-            Button(onClick = { viewModel.saveThemeSetting(context, ThemeSetting.DARK) }) {
-                Text("Темная")
-            }
-            Button(onClick = { viewModel.saveThemeSetting(context, ThemeSetting.SYSTEM) }) {
-                Text("Системная")
-            }
-        }
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        Button(
-            onClick = { onNavigateSettings() },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Настройки")
-        }
     }
 }
 
@@ -137,15 +91,14 @@ fun LimitSetter(viewModel: PuffViewModel) {
 
         Spacer(Modifier.height(8.dp))
 
-        Button(onClick ={
+        Button(onClick = {
             val limit = input.toIntOrNull()
             if (limit != null) {
                 viewModel.updateLimit(limit)
                 input = ""
             }
-        })  {
+        }) {
             Text("Сохранить")
         }
     }
-
 }

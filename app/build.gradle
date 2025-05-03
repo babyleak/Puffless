@@ -48,6 +48,8 @@ dependencies {
     implementation(libs.androidx.core.ktx.v1131)
     implementation(libs.androidx.appcompat.v170)
     implementation(libs.material.v1110)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.gson)
 
     // Compose
     implementation(libs.androidx.ui)
